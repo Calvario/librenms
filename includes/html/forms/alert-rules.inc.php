@@ -61,6 +61,7 @@ $proc = $_POST['proc'];
 $notes = strip_tags($_POST['notes']);
 $recovery = $vars['recovery'];
 $acknowledgement = $vars['acknowledgement'];
+$per_match_transport = $vars['per_match_transport'];
 $invert_map = isset($_POST['invert_map']) ? $_POST['invert_map'] : null;
 $severity = $_POST['severity'];
 
@@ -76,6 +77,7 @@ $invert = ($invert == 'on');
 
 $recovery = empty($recovery) ? $recovery = false : true;
 $acknowledgement = empty($acknowledgement) ? $acknowledgement = false : true;
+$per_match_transport = empty($per_match_transport) ? $per_match_transport = false : true;
 
 $invert_map = ($invert_map == 'on');
 
@@ -87,6 +89,7 @@ $extra = [
     'interval' => $interval_sec,
     'recovery' => $recovery,
     'acknowledgement' => $acknowledgement,
+    'per_match_transport' => $per_match_transport,
     'options' => $options,
 ];
 

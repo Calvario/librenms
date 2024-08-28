@@ -136,6 +136,10 @@ return [
                 'description' => 'Acknowledgement Alerts',
                 'help' => 'Notify if Alert is acknowledged',
             ],
+            'per_match_transport' => [
+                'description' => 'Per match transport',
+                'help' => 'Send each match individualy to the transport',
+            ],
             'invert_map' => [
                 'description' => 'All devices except in list',
                 'help' => 'Alert only for Devices which are not listed',

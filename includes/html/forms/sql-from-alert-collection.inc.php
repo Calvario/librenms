@@ -48,6 +48,7 @@ if (is_numeric($template_id)) {
         'interval' => 60 * Config::get('alert_rule.interval'),
         'recovery' => Config::get('alert_rule.recovery_alerts'),
         'acknowledgement' => Config::get('alert_rule.acknowledgement_alerts'),
+        'per_match_transport' => Config::get('alert_rule.per_match_transport'),
     ];
     $output = [
         'status' => 'ok',

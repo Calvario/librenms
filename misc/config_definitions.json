@@ -240,6 +240,13 @@
             "section": "rules",
             "order": 8
         },
+        "alert_rule.per_match_transport": {
+            "default": false,
+            "type": "boolean",
+            "group": "alerting",
+            "section": "rules",
+            "order": 9
+        },
         "discovery_on_reboot": {
             "default": false,
             "type": "boolean",

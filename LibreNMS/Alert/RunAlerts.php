@@ -513,6 +513,12 @@ class RunAlerts
                 'opts' => $obj,
             ];
         }
+        // Get the alert extra, will be needed for per_match_transport
+        $alert_extra = json_decode($obj['extra'], true);
+        if (! isset($alert_extra['per_match_transport'])) {
+            // backwards compatibility check
+            $alert_extra['per_match_transport'] = false;
+        }
 
         foreach ($transport_maps as $item) {
             $class = Transport::getClass($item['transport_type']);
@@ -522,13 +528,25 @@ class RunAlerts
                 $obj['transport'] = $item['transport_type'];
                 $obj['transport_name'] = $item['transport_name'];
                 $obj['alert'] = new AlertData($obj);
-                $obj['title'] = $type->getTitle($obj);
                 $obj['alert']['title'] = $obj['title'];
-                $obj['msg'] = $type->getBody($obj);
                 c_echo(" :: $transport_title => ");
                 try {
                     $instance = new $class(AlertTransport::find($item['transport_id']));
-                    $tmp = $instance->deliverAlert($obj, $item['opts'] ?? []);
+                    // Loop on each match
+                    if ($alert_extra['per_match_transport']) {
+                        $original_alert_array = $obj['alert'];
+                        unset($obj['alert']);
+                        foreach ($original_alert_array as $alert_match) {
+                            $obj['alert'] = $alert_match;
+                            $obj['title'] = $type->getTitle($alert_match);
+                            $obj['msg'] = $type->getBody($alert_match);
+                            $tmp = $instance->deliverAlert($alert_match, $item['opts'] ?? []);
+                        }
+                    } else {
+                        $obj['title'] = $type->getTitle($obj);
+                        $obj['msg'] = $type->getBody($obj);
+                        $tmp = $instance->deliverAlert($obj, $item['opts'] ?? []);
+                    }
                     $this->alertLog($tmp, $obj, $obj['transport']);
                 } catch (AlertTransportDeliveryException $e) {
                     Eventlog::log($e->getTraceAsString() . PHP_EOL . $e->getMessage(), $obj['device_id'], 'alert', Severity::Error);

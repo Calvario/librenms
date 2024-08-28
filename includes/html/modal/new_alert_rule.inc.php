@@ -23,6 +23,7 @@ $default_mute_alerts = Config::get('alert_rule.mute_alerts');
 $default_invert_rule_match = Config::get('alert_rule.invert_rule_match');
 $default_recovery_alerts = Config::get('alert_rule.recovery_alerts');
 $default_acknowledgement_alerts = Config::get('alert_rule.acknowledgement_alerts');
+$default_per_match_transport = Config::get('alert_rule.per_match_transport');
 $default_invert_map = Config::get('alert_rule.invert_map');
 
 if (Auth::user()->hasGlobalAdmin()) {
@@ -133,11 +134,16 @@ if (Auth::user()->hasGlobalAdmin()) {
                                         <input type='checkbox' name='invert_map' id='invert_map'>
                                     </div>
                                 </div>
-                                <div class="form-group" title="Restricts this alert rule to specified transports.">
-                                    <label for="transports" class="col-sm-3 col-md-2 control-label">Transports </label>
+                                <div class="form-group">
+                                    <label for="transports" class="col-sm-3 col-md-2 control-label" title="Restricts this alert rule to specified transports.">Transports </label>
                                     <div class="col-sm-9 col-md-10">
                                         <select id="transports" name="transports[]" class="form-control" multiple="multiple"></select>
                                     </div>
+                                    <label for='per_match_transport' class='col-sm-3 col-md-3 control-label' title="Per match transport" style="vertical-align: top;">Per match transport </label>
+                                    <div class='col-sm-2' title="Issue per match transport.">
+                                        <input type='checkbox' name='per_match_transport' id='per_match_transport'>
+                                    </div>
+                                </div>
                                 </div>
                                 <div class='form-group' title="A link to some documentation on how to handle this alert. This will be included in notifications.">
                                     <label for='proc' class='col-sm-3 col-md-2 control-label'>Procedure URL </label>
@@ -320,6 +326,7 @@ if (Auth::user()->hasGlobalAdmin()) {
                 $("#invert").bootstrapSwitch('state', <?=$default_invert_rule_match?>);
                 $("#recovery").bootstrapSwitch('state', <?=$default_recovery_alerts?>);
                 $("#acknowledgement").bootstrapSwitch('state', <?=$default_acknowledgement_alerts?>);
+                $("#per_match_transport").bootstrapSwitch('state', <?=$default_per_match_transport?>);
                 $("#override_query").bootstrapSwitch('state', false);
                 $("#invert_map").bootstrapSwitch('state', <?=$default_invert_map?>);
                 $(this).find("input[type=text]").val("");
@@ -406,6 +413,9 @@ if (Auth::user()->hasGlobalAdmin()) {
                 if (typeof extra.acknowledgement == 'undefined') {
                     extra.acknowledgement = '<?=$default_acknowledgement_alerts?>';
                 }
+                if (typeof extra.per_match_transport == 'undefined') {
+                    extra.per_match_transport = '<?=$default_per_match_transport?>';
+                }
 
                 if (typeof extra.options == 'undefined') {
                     extra.options = new Array();
@@ -415,6 +425,7 @@ if (Auth::user()->hasGlobalAdmin()) {
                 }
                 $("[name='recovery']").bootstrapSwitch('state', extra.recovery);
                 $("[name='acknowledgement']").bootstrapSwitch('state', extra.acknowledgement);
+                $("[name='per_match_transport']").bootstrapSwitch('state', extra.per_match_transport);
 
                 if (rule.invert_map == 1) {
                     $("[name='invert_map']").bootstrapSwitch('state', true);
